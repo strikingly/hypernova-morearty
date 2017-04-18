@@ -38,15 +38,14 @@ export const renderMorearty = (name, component, configureStore) => {
       return (props) => {
         const propsString = JSON.stringify(props);
         const localizedProps = JSON.parse(propsString);
-        const ctx = configureStore.server(localizedProps);
-        const contents = ReactDOMServer.renderToString(React.createElement(ctx.bootstrap(component)));
+        const wrappedComponent = configureStore.server(localizedProps);
+        const contents = ReactDOMServer.renderToString(React.createElement(wrappedComponent));
         return serialize(cName, contents, localizedProps);
       };
     },
 
     client() {
-      const ctx = configureStore.client();
-      return ctx.bootstrap(component);
+      return configureStore.client();
     },
   });
 };
