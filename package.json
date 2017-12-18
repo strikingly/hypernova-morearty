@@ -47,6 +47,7 @@
     "babel-cli": "^6.18.0",
     "babel-preset-airbnb": "^2.1.1",
     "chai": "^3.5.0",
+    "emotion-server": "^8.0.12",
     "eslint": "^3.13.1",
     "eslint-config-airbnb": "^14.0.0",
     "eslint-plugin-import": "^2.2.0",
