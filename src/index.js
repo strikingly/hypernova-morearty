@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import hypernova from 'hypernova';
+import { extractCritical } from 'emotion-server'
 
 // https://gist.github.com/jed/982883
 function uuid() {
@@ -18,11 +19,14 @@ function uuid() {
 
 const DATA_KEY = 'hypernova-key';
 const DATA_ID = 'hypernova-id';
+const DATA_EMOTION_ID = 'hypernova-emotion-id'
 
-function serialize(name, html) {
+function serialize(name, html, emotionIds, css) {
   const key = name.replace(/\W/g, '');
   const id = uuid();
-  const markup = `<div data-${DATA_KEY}="${key}" data-${DATA_ID}="${id}">${html}</div>`;
+  const markup = css
+    ? `<style>${css}</style><div data-${DATA_KEY}="${key}" data-${DATA_ID}="${id}" data-${DATA_EMOTION_ID}="${emotionIds}">${html}</div>`
+    : `<div data-${DATA_KEY}="${key}" data-${DATA_ID}="${id}" data-${DATA_EMOTION_ID}="${emotionIds}">${html}</div>`;
   return `${markup}`;
 }
 
@@ -39,8 +43,8 @@ export const renderMorearty = (name, component, configureStore) => {
         const propsString = JSON.stringify(props);
         const localizedProps = JSON.parse(propsString);
         const wrappedComponent = configureStore.server(localizedProps);
-        const contents = ReactDOMServer.renderToString(React.createElement(wrappedComponent));
-        return serialize(cName, contents, localizedProps);
+        const { html, ids, css } = extractCritical(ReactDOMServer.renderToString(React.createElement(wrappedComponent)));
+        return serialize(cName, html, ids, css, localizedProps);
       };
     },
 
